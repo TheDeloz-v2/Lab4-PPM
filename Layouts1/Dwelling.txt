@@ -1,0 +1,164 @@
+/**
+ * Laboratorio 4 Parte 3
+ *
+ * Diego E. Lemus L. - 21469
+ * Programacion de Plataformas Moviles - secc 20
+ *
+ * version 15/08/2022
+ */
+
+import kotlin.math.PI
+import kotlin.math.sqrt
+
+fun main() {
+   val squareCabin = SquareCabin(6, 50.0)
+   val roundHut = RoundHut(3, 10.0)
+   val roundTower = RoundTower(4, 15.5)
+
+   with(squareCabin) {
+       println("\nSquare Cabin\n============")
+       println("Capacity: ${capacity}")
+       println("Material: ${buildingMaterial}")
+       println("Floor area: ${floorArea()}")
+   }
+
+   with(roundHut) {
+       println("\nRound Hut\n=========")
+       println("Material: ${buildingMaterial}")
+       println("Capacity: ${capacity}")
+       println("Floor area: ${floorArea()}")
+       println("Has room? ${hasRoom()}")
+       getRoom()
+       println("Has room? ${hasRoom()}")
+       getRoom()
+       println("Carpet size: ${calculateMaxCarpetLength()}")
+   }
+
+   with(roundTower) {
+       println("\nRound Tower\n==========")
+       println("Material: ${buildingMaterial}")
+       println("Capacity: ${capacity}")
+       println("Floor area: ${floorArea()}")
+       println("Carpet Length: ${calculateMaxCarpetLength()}")
+   }
+}
+
+/**
+* Define las propiedades de las viviendas para cada aspecto.
+*
+* @param residents
+*/
+abstract class Dwelling(private var residents: Int) {
+   abstract val buildingMaterial: String
+   abstract val capacity: Int
+
+   /**
+    * Calcula el area de floor.
+    *
+    * @return floor area
+    */
+   abstract fun floorArea(): Double
+
+   /**
+    * Verifica si hay una habitacion para otro residente.
+    *
+    * @return true si hay una disponible, false de lo contrario
+    */
+   fun hasRoom(): Boolean {
+       return residents < capacity
+   }
+
+   /**
+    * Compara la capacidad de numero de residentes y la
+    * compara con el numero de residentes.
+    * Imprime el resultado.
+    */
+   fun getRoom() {
+       if (capacity > residents) {
+           residents++
+           println("You got a room!")
+       } else {
+           println("Sorry, at capacity and no rooms left.")
+       }
+   }
+}
+
+/**
+* Vivienda tipo campana
+*
+*  @param residents
+*  @param length
+*/
+class SquareCabin(residents: Int, val length: Double) : Dwelling(residents) {
+   override val buildingMaterial = "Wood"
+   override val capacity = 6
+
+   /**
+    * Calcula el area de floor
+    *
+    * @return floor area
+    */
+   override fun floorArea(): Double {
+       return length * length
+   }
+
+}
+
+/**
+* Vivienda circular
+*
+* @param residents
+* @param radius
+*/
+open class RoundHut(
+       residents: Int, val radius: Double) : Dwelling(residents) {
+
+   override val buildingMaterial = "Straw"
+   override val capacity = 4
+
+   /**
+    * Calcula el area de floor.
+    *
+    * @return floor area
+    */
+   override fun floorArea(): Double {
+       return PI * radius * radius
+   }
+
+   /**
+    * Calcula la longitud maxima para una alfombra. 
+    * 
+    * @return length de la alfombra
+    */
+    fun calculateMaxCarpetLength(): Double {
+        return sqrt(2.0) * radius
+    }
+
+}
+
+/**
+* Torre redonda de varias plantas.
+*
+* @param residents
+* @param radius
+* @param floors
+*/
+class RoundTower(
+       residents: Int,
+       radius: Double,
+       val floors: Int = 2) : RoundHut(residents, radius) {
+
+   override val buildingMaterial = "Stone"
+
+   //La capacidad depende del numero de floors.
+   override val capacity = floors * 4
+
+   /**
+    * Calcula el area total de floor
+    * 
+    * @return floor area
+    */
+   override fun floorArea(): Double {
+       return super.floorArea() * floors
+   }
+}
